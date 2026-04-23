@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – HomeHeal{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header fade-in">
+    <div class="flex-center justify-between">
+      <div>
+        <h1 class="page-title">Good {{ 'Morning' if now_hour < 12 else 'Afternoon' if now_hour < 17 else 'Evening' }}, <span>{{ session.user_name.split()[0] }}</span> 👋</h1>
+        <p class="page-subtitle">Here's your health summary for today</p>
+      </div>
+      <div style="font-size:0.82rem;color:var(--text-muted);">
+        <i class="ph ph-calendar"></i> {{ now_date }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="grid grid-4 mb-4 fade-in delay-1">
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-green"><i class="ph ph-chart-bar"></i></div>
+      <div>
+        <div class="stat-value">{{ bmi_latest.bmi if bmi_latest else '–' }}</div>
+        <div class="stat-label">Latest BMI</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-purple"><i class="ph ph-bell"></i></div>
+      <div>
+        <div class="stat-value">{{ reminder_count }}</div>
+        <div class="stat-label">Active Reminders</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-blue"><i class="ph ph-calendar-check"></i></div>
+      <div>
+        <div class="stat-value">{{ appt_count }}</div>
+        <div class="stat-label">Pending Appointments</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-yellow"><i class="ph ph-heartbeat"></i></div>
+      <div>
+        <div class="stat-value">{{ bmi_latest.category.split()[0] if bmi_latest else 'N/A' }}</div>
+        <div class="stat-label">BMI Category</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-2 mb-4">
+    <!-- Today's Reminders -->
+    <div class="card fade-in delay-2">
+      <div class="flex-center justify-between mb-3">
+        <h2 style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;"><i class="ph ph-bell" style="color:var(--accent-light);"></i> Today's Reminders</h2>
+        <a href="{{ url_for('reminders') }}" class="btn btn-ghost btn-sm">View All <i class="ph ph-arrow-right"></i></a>
+      </div>
+      {% if reminders %}
+        {% for r in reminders[:4] %}
+        <div class="reminder-item">
+          <div class="reminder-dot"></div>
+          <div class="reminder-info">
+            <div class="reminder-name">{{ r.medicine_name }}</div>
+            <div class="reminder-meta">{{ r.dosage }} · {{ r.time }} · {{ r.frequency }}</div>
+          </div>
+          <span class="badge badge-success">Active</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">💊</div>
+          <div class="empty-title">No reminders yet</div>
+          <div class="empty-sub">Add medicine reminders to stay on track.</div>
+          <a href="{{ url_for('reminders') }}" class="btn btn-primary btn-sm mt-2">Add Reminder</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Recent Appointments -->
+    <div class="card fade-in delay-3">
+      <div class="flex-center justify-between mb-3">
+        <h2 style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;"><i class="ph ph-calendar-check" style="color:var(--primary);"></i> Appointments</h2>
+        <a href="{{ url_for('appointments') }}" class="btn btn-ghost btn-sm">View All <i class="ph ph-arrow-right"></i></a>
+      </div>
+      {% if appointments %}
+        {% for a in appointments[:3] %}
+        <div class="appt-card">
+          <div class="appt-avatar">🩺</div>
+          <div class="appt-info">
+            <div class="appt-name">{{ a.doctor_name }}</div>
+            <div class="appt-meta">{{ a.specialization }} · {{ a.date }} at {{ a.time }}</div>
+          </div>
+          <span class="badge badge-{% if a.status=='Pending' %}warning{% elif a.status=='Cancelled' %}danger{% else %}success{% endif %}">{{ a.status }}</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">📅</div>
+          <div class="empty-title">No appointments</div>
+          <div class="empty-sub">Book your first doctor appointment.</div>
+          <a href="{{ url_for('appointments') }}" class="btn btn-primary btn-sm mt-2">Book Now</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="card fade-in delay-4 mb-4">
+    <h2 style="font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:1rem;"><i class="ph ph-lightning" style="color:var(--primary);"></i> Quick Actions</h2>
+    <div class="grid grid-4">
+      <a href="{{ url_for('bmi') }}" class="btn btn-outline" id="quick-bmi" style="justify-content:flex-start;gap:10px;height:56px;">
+        <span style="font-size:1.3rem;">📊</span> Calculate BMI
+      </a>
+      <a href="{{ url_for('reminders') }}" class="btn btn-outline" id="quick-reminder" style="justify-content:flex-start;gap:10px;height:56px;">
+        <span style="font-size:1.3rem;">💊</span> Add Reminder
+      </a>
+      <a href="{{ url_for('appointments') }}" class="btn btn-outline" id="quick-appt" style="justify-content:flex-start;gap:10px;height:56px;">
+        <span style="font-size:1.3rem;">📅</span> Book Appointment
+      </a>
+      <a href="{{ url_for('help_page') }}" class="btn btn-outline" id="quick-help" style="justify-content:flex-start;gap:10px;height:56px;">
+        <span style="font-size:1.3rem;">❓</span> Get Help
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Pass time info from Python
+</script>
+{% endblock %}

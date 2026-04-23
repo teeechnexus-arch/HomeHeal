@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}BMI Calculator – HomeHeal{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header fade-in">
+    <h1 class="page-title"><i class="ph ph-chart-bar" style="color:var(--primary);font-size:1.5rem;"></i> BMI
+      <span>Calculator</span></h1>
+    <p class="page-subtitle">Calculate your Body Mass Index and get personalised health guidance</p>
+  </div>
+
+  <div class="grid grid-2" style="align-items:start;gap:2rem;">
+    <!-- Calculator Form -->
+    <div class="fade-in delay-1">
+      <div class="card">
+        <h2 style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1.5rem;">Enter Your
+          Details</h2>
+        <form method="POST" action="{{ url_for('bmi') }}" id="bmi-form">
+          <div class="form-group">
+            <label class="form-label" for="weight">Weight (kg)</label>
+            <div class="input-icon-wrap">
+              <i class="ph ph-barbell icon"></i>
+              <input type="number" id="weight" name="weight" class="form-control" placeholder="e.g. 65" step="0.1"
+                min="10" max="300" required value="{{ result.weight if result else '' }}" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="height">Height (cm)</label>
+            <div class="input-icon-wrap">
+              <i class="ph ph-ruler icon"></i>
+              <input type="number" id="height" name="height" class="form-control" placeholder="e.g. 170" step="0.1"
+                min="50" max="250" required value="{{ result.height if result else '' }}" />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block mt-2" id="bmi-calculate">
+            <i class="ph ph-calculator"></i> Calculate BMI
+          </button>
+        </form>
+      </div>
+
+      <!-- BMI Chart Info -->
+      <div class="card mt-3">
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:1rem;font-family:'Outfit',sans-serif;">BMI Categories
+        </h3>
+        {% for label, color, range in [
+        ('Underweight', '#3b82f6', 'Below 18.5'),
+        ('Normal Weight', '#10b981', '18.5 – 24.9'),
+        ('Overweight', '#f59e0b', '25 – 29.9'),
+        ('Obese', '#ef4444', '30 and above')
+        ] %}
+        <div class="flex-center justify-between" style="padding:8px 0;border-bottom:1px solid var(--card-border);">
+          <div class="flex-center" style="gap:10px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:{{ color }};"></div>
+            <span style="font-size:0.875rem;">{{ label }}</span>
+          </div>
+          <span style="font-size:0.825rem;color:var(--text-muted);">{{ range }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Result & History -->
+    <div class="fade-in delay-2">
+      {% if result %}
+      <div class="bmi-result-card mb-3">
+        <div class="text-muted text-sm mb-1">Your BMI</div>
+        <div class="bmi-number">{{ result.bmi }}</div>
+        <div class="bmi-category"
+          style="color:{% if result.color=='green' %}#10b981{% elif result.color=='blue' %}#3b82f6{% elif result.color=='yellow' %}#f59e0b{% else %}#ef4444{% endif %}">
+          {{ result.category }}
+        </div>
+
+        <!-- BMI Bar -->
+        <div class="bmi-bar-wrap">
+          <div class="bmi-bar">
+            {% set pct = [[(result.bmi - 10) / (45 - 10) * 100, 2]|max, 98]|min %}
+            <div class="bmi-indicator" style="left: {{ pct }}%;"></div>
+          </div>
+          <div class="bmi-scale-labels">
+            <span>10</span><span>18.5</span><span>25</span><span>30</span><span>45+</span>
+          </div>
+        </div>
+
+        <p class="bmi-tip"><i class="ph ph-lightbulb" style="color:var(--warning);"></i> {{ result.tip }}</p>
+        <p style="font-size:0.75rem;color:var(--text-dim);margin-top:1rem;">
+          ⚠️ This is for informational purposes only. Always consult a healthcare professional.
+        </p>
+      </div>
+      {% else %}
+      <div class="card bmi-result-card" style="opacity:0.5;">
+        <div style="font-size:4rem;">📊</div>
+        <div style="font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:700;margin-top:1rem;">Your result will
+          appear here</div>
+        <p style="font-size:0.875rem;color:var(--text-muted);margin-top:8px;">Enter your weight and height to calculate
+          your BMI.</p>
+      </div>
+      {% endif %}
+
+      <!-- History -->
+      {% if history %}
+      <div class="card mt-3">
+        <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:1rem;font-family:'Outfit',sans-serif;"><i
+            class="ph ph-clock-counter-clockwise" style="color:var(--primary);"></i> History</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Weight</th>
+                <th>Height</th>
+                <th>BMI</th>
+                <th>Category</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for h in history %}
+              <tr>
+                <td>{{ h.recorded_at[:10] }}</td>
+                <td>{{ h.weight }} kg</td>
+                <td>{{ h.height }} cm</td>
+                <td><strong style="color:var(--primary);">{{ h.bmi }}</strong></td>
+                <td>
+                  <span
+                    class="badge badge-{% if h.category=='Normal Weight' %}success{% elif h.category=='Underweight' %}info{% elif h.category=='Overweight' %}warning{% else %}danger{% endif %}">{{
+                    h.category }}</span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

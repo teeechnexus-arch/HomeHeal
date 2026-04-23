@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Appointments – HomeHeal{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header fade-in">
+    <h1 class="page-title"><i class="ph ph-calendar-check" style="color:var(--primary);font-size:1.5rem;"></i> <span>Appointments</span></h1>
+    <p class="page-subtitle">Request and manage your doctor or health mentor appointments</p>
+  </div>
+
+  <div class="grid" style="grid-template-columns:360px 1fr;gap:1.75rem;align-items:start;">
+    <!-- Booking Form -->
+    <div class="card fade-in delay-1" style="position:sticky;top:84px;">
+      <h2 style="font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:1.25rem;"><i class="ph ph-calendar-plus" style="color:var(--primary);"></i> Request Appointment</h2>
+      <form method="POST" action="{{ url_for('appointments') }}" id="appt-form">
+        <div class="form-group">
+          <label class="form-label" for="doctor_name">Doctor / Mentor Name *</label>
+          <div class="input-icon-wrap">
+            <i class="ph ph-user-circle icon"></i>
+            <input type="text" id="doctor_name" name="doctor_name" class="form-control"
+                   placeholder="e.g. Dr. Sharma" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="specialization">Specialization</label>
+          <select id="specialization" name="specialization" class="form-control">
+            <option value="">Select specialization</option>
+            <option>General Physician</option>
+            <option>Nutritionist</option>
+            <option>Cardiologist</option>
+            <option>Dermatologist</option>
+            <option>Orthopedist</option>
+            <option>Psychiatrist</option>
+            <option>Health Mentor</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="date">Preferred Date *</label>
+          <input type="date" id="date" name="date" class="form-control" required
+                 min="{{ today }}" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="time">Preferred Time *</label>
+          <input type="time" id="time" name="time" class="form-control" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reason">Reason for Visit</label>
+          <textarea id="reason" name="reason" class="form-control" rows="3"
+                    placeholder="Brief description of your health concern..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="appt-submit">
+          <i class="ph ph-paper-plane-tilt"></i> Submit Request
+        </button>
+      </form>
+    </div>
+
+    <!-- Appointments List -->
+    <div class="fade-in delay-2">
+      {% if appointments %}
+        <div class="flex-center justify-between mb-3">
+          <h2 style="font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;">
+            My Appointments <span style="color:var(--text-muted);font-weight:400;font-size:0.85rem;">({{ appointments|length }})</span>
+          </h2>
+        </div>
+        {% for a in appointments %}
+        <div class="appt-card">
+          <div class="appt-avatar">🩺</div>
+          <div class="appt-info">
+            <div class="appt-name">{{ a.doctor_name }}</div>
+            <div class="appt-meta">
+              {% if a.specialization %}{{ a.specialization }} · {% endif %}
+              <i class="ph ph-calendar"></i> {{ a.date }} at {{ a.time }}
+              {% if a.reason %}<br/><span style="font-style:italic;color:var(--text-dim);">{{ a.reason[:70] }}{% if a.reason|length > 70 %}...{% endif %}</span>{% endif %}
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">
+            <span class="badge badge-{% if a.status=='Pending' %}warning{% elif a.status=='Cancelled' %}danger{% else %}success{% endif %}">{{ a.status }}</span>
+            {% if a.status == 'Pending' %}
+            <a href="{{ url_for('cancel_appointment', aid=a.id) }}" class="btn btn-danger btn-sm"
+               onclick="return confirm('Cancel this appointment?')">
+              <i class="ph ph-x"></i> Cancel
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="card">
+          <div class="empty-state">
+            <div class="empty-icon">📅</div>
+            <div class="empty-title">No appointments yet</div>
+            <div class="empty-sub">Request your first appointment using the form on the left.</div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

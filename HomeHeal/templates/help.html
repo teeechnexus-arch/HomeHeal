@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Help & Support – HomeHeal{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header fade-in text-center">
+    <h1 class="page-title"><span>Help</span> & Support</h1>
+    <p class="page-subtitle">Everything you need to know about using HomeHeal</p>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="grid grid-4 mb-4 fade-in delay-1">
+    {% for icon, title, desc in [
+      ('📊', 'BMI Calculator', 'Learn how to use the BMI tool'),
+      ('💊', 'Medicine Reminders', 'Set up and manage reminders'),
+      ('📅', 'Appointments', 'How to book and cancel'),
+      ('🔒', 'Privacy & Security', 'How your data is protected')
+    ] %}
+    <div class="card card-sm text-center" style="cursor:pointer;" onclick="document.getElementById('faq-{{ loop.index }}').scrollIntoView({behavior:'smooth'})">
+      <div style="font-size:2rem;margin-bottom:8px;">{{ icon }}</div>
+      <div style="font-weight:600;font-size:0.9rem;">{{ title }}</div>
+      <div class="text-muted text-sm mt-1">{{ desc }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- FAQ Sections -->
+  <div class="grid grid-2" style="align-items:start;gap:1.75rem;">
+    <div>
+      <h2 id="faq-1" style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1rem;">
+        <span style="color:var(--primary);">📊</span> BMI Calculator
+      </h2>
+      {% set bmi_faqs = [
+        ('What is BMI?', 'BMI (Body Mass Index) is a simple measure of body fat based on your height and weight. It applies to most adults between 18–65 years.'),
+        ('Is BMI an accurate health measure?', 'BMI is a screening tool, not a diagnostic one. It provides a general indicator but does not account for muscle mass, bone density, or distribution of fat. Always consult a healthcare professional for a complete assessment.'),
+        ('How do I calculate my BMI?', 'Enter your weight in kilograms and height in centimetres into the BMI Calculator page. HomeHeal will calculate your BMI and show which category you fall into.'),
+        ('Is my BMI data saved?', 'Yes, each calculation is saved to your history so you can track changes over time.')
+      ] %}
+      {% for q, a in bmi_faqs %}
+      <div class="faq-item fade-in">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          {{ q }} <i class="ph ph-caret-down faq-arrow"></i>
+        </div>
+        <div class="faq-a">{{ a }}</div>
+      </div>
+      {% endfor %}
+
+      <h2 id="faq-3" style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;margin:1.5rem 0 1rem;">
+        <span style="color:var(--primary);">📅</span> Appointments
+      </h2>
+      {% set appt_faqs = [
+        ('How do I book an appointment?', 'Go to the Appointments page, fill in the doctor\'s name, specialisation, your preferred date and time, and the reason for the visit, then click Submit Request.'),
+        ('Can I cancel an appointment?', 'Yes. On the Appointments page, click the Cancel button next to any pending appointment. Cancelled appointments remain visible in your history.'),
+        ('Does HomeHeal connect me with real doctors?', 'HomeHeal is an academic project for educational purposes. Appointments are requests stored for informational purposes and are not connected to real healthcare providers.')
+      ] %}
+      {% for q, a in appt_faqs %}
+      <div class="faq-item fade-in">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          {{ q }} <i class="ph ph-caret-down faq-arrow"></i>
+        </div>
+        <div class="faq-a">{{ a }}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div>
+      <h2 id="faq-2" style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1rem;">
+        <span style="color:var(--primary);">💊</span> Medicine Reminders
+      </h2>
+      {% set rem_faqs = [
+        ('How do I add a medicine reminder?', 'Go to the Reminders page and fill in the medicine name, dosage, time, and frequency. Click "Add Reminder" to save it.'),
+        ('Can I pause a reminder without deleting it?', 'Yes! Click the pause icon next to any active reminder to disable it temporarily. Click the play icon to re-enable it.'),
+        ('Does HomeHeal send actual notifications?', 'Currently HomeHeal stores and displays your reminder schedule. Browser-based push notifications are a planned future enhancement.'),
+        ('Can I add notes to a reminder?', 'Yes, the Notes field allows you to add instructions like "Take after meals" or "Do not take with milk".')
+      ] %}
+      {% for q, a in rem_faqs %}
+      <div class="faq-item fade-in">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          {{ q }} <i class="ph ph-caret-down faq-arrow"></i>
+        </div>
+        <div class="faq-a">{{ a }}</div>
+      </div>
+      {% endfor %}
+
+      <h2 id="faq-4" style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;margin:1.5rem 0 1rem;">
+        <span style="color:var(--primary);">🔒</span> Privacy & Security
+      </h2>
+      {% set priv_faqs = [
+        ('Is my data secure?', 'Passwords are hashed using industry-standard bcrypt encryption. Your health data is stored locally in a SQLite database and is never shared with third parties.'),
+        ('Is HomeHeal a medical application?', 'No. HomeHeal is designed for informational and educational purposes only. It does not provide medical diagnoses or professional medical advice. Always consult a qualified healthcare professional.'),
+        ('How do I delete my account?', 'Account deletion is planned for a future update. For now, please contact the project administrator.')
+      ] %}
+      {% for q, a in priv_faqs %}
+      <div class="faq-item fade-in">
+        <div class="faq-q" onclick="toggleFAQ(this)">
+          {{ q }} <i class="ph ph-caret-down faq-arrow"></i>
+        </div>
+        <div class="faq-a">{{ a }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="card mt-4 mb-4 fade-in" style="border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.05);">
+    <div class="flex-center" style="gap:12px;align-items:flex-start;">
+      <i class="ph ph-warning" style="color:var(--warning);font-size:1.5rem;flex-shrink:0;margin-top:2px;"></i>
+      <div>
+        <div style="font-weight:700;margin-bottom:4px;color:var(--warning);">Medical Disclaimer</div>
+        <p style="font-size:0.875rem;color:var(--text-muted);line-height:1.7;">
+          HomeHeal is a web-based health management system developed for academic purposes as part of a BTech first-year project. It provides health information and tools for general awareness and preventive healthcare guidance only. It is <strong>not</strong> a licensed medical application and does not provide medical diagnoses, prescriptions, or professional medical advice. Users are strongly advised to consult qualified healthcare professionals for any medical concerns.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleFAQ(el) {
+  const item = el.parentElement;
+  item.classList.toggle('open');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}Medicine Reminders – HomeHeal{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header fade-in">
+    <h1 class="page-title"><i class="ph ph-bell" style="color:var(--accent-light);font-size:1.5rem;"></i> Medicine <span>Reminders</span></h1>
+    <p class="page-subtitle">Schedule your medicines and never miss a dose</p>
+  </div>
+
+  <div class="grid" style="grid-template-columns:340px 1fr;gap:1.75rem;align-items:start;">
+    <!-- Add Reminder Form -->
+    <div class="card fade-in delay-1" style="position:sticky;top:84px;">
+      <h2 style="font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:1.25rem;"><i class="ph ph-plus-circle" style="color:var(--primary);"></i> Add New Reminder</h2>
+      <form method="POST" action="{{ url_for('reminders') }}" id="add-reminder-form">
+        <div class="form-group">
+          <label class="form-label" for="medicine_name">Medicine Name *</label>
+          <input type="text" id="medicine_name" name="medicine_name" class="form-control"
+                 placeholder="e.g. Paracetamol" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dosage">Dosage</label>
+          <input type="text" id="dosage" name="dosage" class="form-control"
+                 placeholder="e.g. 500mg, 1 tablet" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="time">Time *</label>
+          <input type="time" id="time" name="time" class="form-control" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="frequency">Frequency *</label>
+          <select id="frequency" name="frequency" class="form-control" required>
+            <option value="">Select frequency</option>
+            <option value="Once Daily">Once Daily</option>
+            <option value="Twice Daily">Twice Daily</option>
+            <option value="Thrice Daily">Thrice Daily</option>
+            <option value="Every 8 Hours">Every 8 Hours</option>
+            <option value="Every 12 Hours">Every 12 Hours</option>
+            <option value="Weekly">Weekly</option>
+            <option value="As Needed">As Needed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="notes">Notes (optional)</label>
+          <textarea id="notes" name="notes" class="form-control" rows="2"
+                    placeholder="e.g. Take after meals"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="add-reminder-submit">
+          <i class="ph ph-plus"></i> Add Reminder
+        </button>
+      </form>
+    </div>
+
+    <!-- Reminder List -->
+    <div class="fade-in delay-2">
+      {% if reminders %}
+        <div class="flex-center justify-between mb-3">
+          <h2 style="font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;">
+            All Reminders <span style="color:var(--text-muted);font-weight:400;font-size:0.85rem;">({{ reminders|length }})</span>
+          </h2>
+        </div>
+        {% for r in reminders %}
+        <div class="reminder-item {% if not r.active %}inactive{% endif %}">
+          <div class="reminder-dot"></div>
+          <div class="reminder-info">
+            <div class="reminder-name">{{ r.medicine_name }}</div>
+            <div class="reminder-meta">
+              {% if r.dosage %}{{ r.dosage }} · {% endif %}
+              <i class="ph ph-clock"></i> {{ r.time }} · {{ r.frequency }}
+              {% if r.notes %}<br/><span style="font-style:italic;">{{ r.notes }}</span>{% endif %}
+            </div>
+          </div>
+          <div class="reminder-actions">
+            <span class="badge badge-{% if r.active %}success{% else %}warning{% endif %}">
+              {% if r.active %}Active{% else %}Paused{% endif %}
+            </span>
+            <a href="{{ url_for('toggle_reminder', rid=r.id) }}" class="btn btn-ghost btn-sm" title="Toggle">
+              <i class="ph ph-{% if r.active %}pause{% else %}play{% endif %}"></i>
+            </a>
+            <a href="{{ url_for('delete_reminder', rid=r.id) }}" class="btn btn-danger btn-sm"
+               title="Delete" onclick="return confirm('Delete this reminder?')">
+              <i class="ph ph-trash"></i>
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="card">
+          <div class="empty-state">
+            <div class="empty-icon">💊</div>
+            <div class="empty-title">No reminders added yet</div>
+            <div class="empty-sub">Add your first medicine reminder using the form on the left.</div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}HomeHeal – Smart Health Management Website{% endblock %}
+
+{% block content %}
+<!-- ══ HERO ══════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content fade-in">
+      <div class="hero-badge">
+        <i class="ph ph-heartbeat"></i> Smart Health Management Platform
+      </div>
+      <h1 class="hero-title">
+        Your Health,<br/>
+        <span class="highlight">Your Control.</span>
+      </h1>
+      <p class="hero-sub">
+        HomeHeal brings together BMI tracking, medicine reminders, and appointment booking — all in one beautifully simple platform focused on <strong>preventive healthcare</strong>.
+      </p>
+      <div class="hero-actions">
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg" id="hero-get-started">
+          <i class="ph ph-rocket-launch"></i> Get Started Free
+        </a>
+        <a href="#features" class="btn btn-outline btn-lg" id="hero-learn-more">
+          <i class="ph ph-arrow-down"></i> Explore Features
+        </a>
+      </div>
+    </div>
+
+    <!-- Floating Stats -->
+    <div style="position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:1rem;opacity:0.9;" class="fade-in delay-3">
+      <div class="card card-sm" style="min-width:180px;">
+        <div class="flex-center mb-1">
+          <span style="font-size:1.5rem;">🏃</span>
+          <span class="text-muted text-sm">BMI Tracker</span>
+        </div>
+        <div style="font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:700;color:var(--primary);">22.4</div>
+        <div class="text-sm text-muted">Normal Weight ✓</div>
+      </div>
+      <div class="card card-sm" style="min-width:180px;">
+        <div class="flex-center mb-1">
+          <span style="font-size:1.5rem;">💊</span>
+          <span class="text-muted text-sm">Reminders</span>
+        </div>
+        <div style="font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:700;color:var(--accent-light);">3 Today</div>
+        <div class="text-sm text-muted">All on schedule</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══════════════════════════════════════════════════════ -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="text-center mb-4">
+      <div class="section-badge"><i class="ph ph-star"></i> Core Features</div>
+      <h2 class="section-title">Everything You Need,<br/><span style="color:var(--primary)">In One Place</span></h2>
+      <p class="section-sub">No more juggling apps. HomeHeal gives you all the tools to manage your daily health in one clean, simple interface.</p>
+    </div>
+
+    <div class="grid grid-3 fade-in">
+      <div class="card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">BMI Calculator</div>
+        <p class="feature-desc">Calculate your Body Mass Index instantly with smart categorisation and personalised health tips based on your results.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">💊</div>
+        <div class="feature-title">Medicine Reminders</div>
+        <p class="feature-desc">Set up and manage medicine schedules with customisable frequency options — never miss a dose again.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">📅</div>
+        <div class="feature-title">Appointment Requests</div>
+        <p class="feature-desc">Request doctor or health mentor appointments easily with date, time, and reason — all tracked in one place.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">Secure Login</div>
+        <p class="feature-desc">Your data is protected with hashed passwords and session-based authentication. Privacy first, always.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">🖥️</div>
+        <div class="feature-title">Personal Dashboard</div>
+        <p class="feature-desc">A beautiful overview of your health stats, upcoming reminders, and pending appointments at a glance.</p>
+      </div>
+      <div class="card">
+        <div class="feature-icon">❓</div>
+        <div class="feature-title">Help & Support</div>
+        <p class="feature-desc">Detailed FAQs and guidance for every feature. We're here to ensure you get the most out of HomeHeal.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══════════════════════════════════════════════════ -->
+<section class="section" style="background:rgba(255,255,255,0.02);border-top:1px solid var(--card-border);border-bottom:1px solid var(--card-border);">
+  <div class="container">
+    <div class="text-center mb-4">
+      <div class="section-badge"><i class="ph ph-path"></i> How It Works</div>
+      <h2 class="section-title">Up & Running in <span style="color:var(--primary)">3 Steps</span></h2>
+    </div>
+    <div class="grid grid-3">
+      {% for step in [
+        ('01', 'Create Account', 'Sign up in seconds with your name and email. No complicated forms, no credit card needed.', 'ph-user-plus'),
+        ('02', 'Set Up Profile', 'Add your health stats, set medicine reminders, and configure your appointments.', 'ph-gear'),
+        ('03', 'Stay Healthy', 'Get reminders, track BMI changes over time, and manage all your health data in one place.', 'ph-heartbeat')
+      ] %}
+      <div class="text-center fade-in delay-{{ loop.index }}">
+        <div style="width:72px;height:72px;border-radius:20px;background:var(--primary-glow);border:1px solid rgba(0,212,170,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:800;color:var(--primary);">{{ step[0] }}</div>
+        <h3 style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:8px;">{{ step[1] }}</h3>
+        <p style="font-size:0.875rem;color:var(--text-muted);line-height:1.65;">{{ step[2] }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container text-center">
+    <div style="max-width:580px;margin:0 auto;">
+      <h2 class="section-title">Start Your Health Journey <span style="color:var(--primary)">Today</span></h2>
+      <p style="color:var(--text-muted);margin:1rem 0 2rem;line-height:1.7;">HomeHeal is free, simple, and focused on what matters — your wellbeing. No diagnosis, no complexity. Just the tools you need.</p>
+      <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg" id="cta-register">
+        <i class="ph ph-rocket-launch"></i> Create Free Account
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
